@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almanca Kelime Pratiği</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 400px;
+            background-color: #f0f0f0;
+        }
+        .word-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 20px auto;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .word-card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+        .revealed {
+            background-color: #d1ffd1;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #0056b3;
+        }
+        .activity-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .activity-button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .activity-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Almanca A1 Kelime Pratiği</h1>
+    <p>Kartın üzerine tıklayarak Almanca kelimenin Türkçe karşılığını görebilirsiniz.</p>
+
+    <div id="word-list">
+        <!-- Kelimeler burada listelenecek -->
+    </div>
+
+    <div class="button-container">
+        <button class="nav-button" onclick="previousWord()">Önceki</button>
+        <button class="nav-button" onclick="nextWord()">Sonraki</button>
+    </div>
+
+    <div class="activity-container">
+        <h2>Etkinlikler</h2>
+        <button class="activity-button" onclick="guessArticle()">Artikel Tahmini</button>
+        <button class="activity-button" onclick="matchWords()">Kelime Eşleştirme</button>
+    </div>
+
+    <script>
+        const words = [
+            { german: "das Haus", turkish: "Ev" },
+            { german: "der Baum", turkish: "Ağaç" },
+            { german: "das Auto", turkish: "Araba" },
+            { german: "der Hund", turkish: "Köpek" },
+            { german: "die Katze", turkish: "Kedi" },
+            { german: "das Buch", turkish: "Kitap" },
+            { german: "der Tisch", turkish: "Masa" },
+            { german: "der Stuhl", turkish: "Sandalye" },
+            { german: "das Fenster", turkish: "Pencere" },
+            { german: "die Wand", turkish: "Duvar" },
+            { german: "die Lampe", turkish: "Lamba" },
+            { german: "das Brot", turkish: "Ekmek" },
+            { german: "das Wasser", turkish: "Su" },
+            { german: "die Milch", turkish: "Süt" },
+            { german: "der Apfel", turkish: "Elma" },
+            { german: "die Banane", turkish: "Muz" },
+            { german: "der Käse", turkish: "Peynir" },
+            { german: "der Zucker", turkish: "Şeker" },
+            { german: "das Salz", turkish: "Tuz" },
+            { german: "die Tasse", turkish: "Fincan" },
+            { german: "das Glas", turkish: "Bardak" },
+            { german: "das Messer", turkish: "Bıçak" },
+            { german: "die Gabel", turkish: "Çatal" },
+            { german: "der Löffel", turkish: "Kaşık" },
+            { german: "die Uhr", turkish: "Saat" },
+            { german: "das Kleid", turkish: "Elbise" },
+            { german: "der Schuh", turkish: "Ayakkabı" },
+            { german: "das Hemd", turkish: "Gömlek" },
+            { german: "die Hose", turkish: "Pantolon" },
+            { german: "die Jacke", turkish: "Ceket" },
+            { german: "die Schule", turkish: "Okul" },
+            { german: "der Lehrer", turkish: "Öğretmen" },
+            { german: "der Schüler", turkish: "Öğrenci" },
+            { german: "der Bleistift", turkish: "Kurşun Kalem" },
+            { german: "das Papier", turkish: "Kağıt" },
+            { german: "das Bett", turkish: "Yatak" },
+            { german: "das Kissen", turkish: "Yastık" },
+            { german: "die Decke", turkish: "Battaniye" },
+            { german: "die Tür", turkish: "Kapı" },
+            { german: "der Schrank", turkish: "Dolap" },
+            { german: "der Zahn", turkish: "Dış" },
+            { german: "die Hand", turkish: "El" },
+            { german: "der Fuss", turkish: "Ayak" },
+            { german: "der Kopf", turkish: "Baş" },
+            { german: "die Nase", turkish: "Burun" },
+            { german: "das Auge", turkish: "Göz" },
+            { german: "das Ohr", turkish: "Kulak" },
+            { german: "der Mund", turkish: "Ağız" },
+            { german: "der Körper", turkish: "Vücut" }
+        ];
+
+        const wordList = document.getElementById('word-list');
+
+        let currentIndex = 0;
+
+        function displayWord(index) {
+            const word = words[index];
+            const card = document.createElement('div');
+            card.classList.add('word-card');
+
+            card.textContent = word.german;
+            card.onclick = () => {
+                if (card.textContent === word.german) {
+                    card.textContent = word.turkish;
+                    card.classList.add('revealed');
+                } else {
+                    card.textContent = word.german;
+                    card.classList.remove('revealed');
+                }
+            };
+
+            wordList.innerHTML = '';
+            wordList.appendChild(card);
+        }
+
+        function nextWord() {
+            currentIndex = (currentIndex + 1) % words.length;
+            displayWord(currentIndex);
+        }
+
+        function previousWord() {
+            currentIndex = (currentIndex - 1 + words.length) % words.length;
+            displayWord(currentIndex);
+        }
+
+        function guessArticle() {
+            const word = words[currentIndex];
+            const article = prompt(`"${word.german}" kelimesinin artikeli nedir? (der/die/das)`);
+            if (article === word.german.split(' ')[0]) {
+                alert("Doğru! Harika iş çıkardın.");
+            } else {
+                alert(`Yanlış. Doğru cevap: ${word.german.split(' ')[0]}`);
+            }
+        }
+
+        function matchWords() {
+            alert("Bu etkinlik ananın amına girsin.");
+        }
+
+        // Start with the first word
+        displayWord(currentIndex);
+
+        // Automatically move to the next word every 5 seconds
+        setInterval(nextWord, 5000);
+    </script>
+</body>
+</html>
